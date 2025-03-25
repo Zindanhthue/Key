@@ -1,0 +1,202 @@
+local UserInputService = game:GetService("UserInputService")
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local LocalPlayer = Players.LocalPlayer
+local Camera = game.Workspace.CurrentCamera
+
+local ScreenGui = Instance.new("ScreenGui", game.CoreGui)
+
+local Overlay = Instance.new("Frame", ScreenGui)
+Overlay.Size = UDim2.new(1, 0, 1, 0)
+Overlay.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Overlay.BackgroundTransparency = 0.3
+Overlay.Visible = true
+
+local Notification = Instance.new("TextLabel", Overlay)
+Notification.Size = UDim2.new(1, 0, 1, 0)
+Notification.BackgroundTransparency = 1
+Notification.Text = "Đặng Nguyên"
+Notification.TextColor3 = Color3.fromRGB(255, 182, 193)
+Notification.TextSize = 80
+Notification.Font = Enum.Font.SourceSansBold
+
+wait(3)
+Overlay.Visible = false
+
+local Frame = Instance.new("Frame", ScreenGui)
+Frame.Size = UDim2.new(0, 220, 0, 150)
+Frame.Position = UDim2.new(0, -220, 0.5, -75)
+Frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+Frame.BackgroundTransparency = 0.2
+Frame.BorderSizePixel = 0
+Frame.Visible = false
+Frame.ClipsDescendants = true
+Frame.Active = true
+Frame.Draggable = true
+
+local UICorner = Instance.new("UICorner", Frame)
+UICorner.CornerRadius = UDim.new(0, 10)
+
+local UIStroke = Instance.new("UIStroke", Frame)
+UIStroke.Color = Color3.fromRGB(255, 105, 180)
+UIStroke.Thickness = 2
+
+local Title = Instance.new("TextLabel", Frame)
+Title.Size = UDim2.new(1, 0, 0, 30)
+Title.Position = UDim2.new(0, 0, 0, 0)
+Title.BackgroundTransparency = 1
+Title.Text = "Make By DNN"
+Title.TextColor3 = Color3.fromRGB(255, 182, 193)
+Title.TextSize = 22
+Title.Font = Enum.Font.SourceSansBold
+
+local function ToggleMenu()
+    if Frame.Visible then
+        Frame:TweenPosition(UDim2.new(0, -220, 0.5, -75), "Out", "Quart", 0.5, true)
+        wait(0.5)
+        Frame.Visible = false
+    else
+        Frame.Visible = true
+        Frame:TweenPosition(UDim2.new(0, 10, 0.5, -75), "Out", "Quart", 0.5, true)
+    end
+end
+
+local ToggleMenuButton = Instance.new("TextButton", ScreenGui)
+ToggleMenuButton.Size = UDim2.new(0, 50, 0, 50)
+ToggleMenuButton.Position = UDim2.new(0, 10, 0, 10)
+ToggleMenuButton.BackgroundColor3 = Color3.fromRGB(255, 182, 193)
+ToggleMenuButton.Text = "📜"
+ToggleMenuButton.TextSize = 30
+ToggleMenuButton.Font = Enum.Font.SourceSansBold
+ToggleMenuButton.MouseButton1Click:Connect(ToggleMenu)
+
+local UICornerToggle = Instance.new("UICorner", ToggleMenuButton)
+UICornerToggle.CornerRadius = UDim.new(1, 0)
+
+local function CreateButton(parent, text, icon)
+    local Button = Instance.new("TextButton", parent)
+    Button.Size = UDim2.new(1, -20, 0, 30)
+    Button.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+    Button.TextSize = 16
+    Button.Font = Enum.Font.SourceSansBold
+    Button.Text = icon .. " " .. text
+    return Button
+end
+
+local ESPButton = CreateButton(Frame, "ESP OFF", "👀")
+ESPButton.Position = UDim2.new(0, 10, 0, 40)
+
+local AimbotButton = CreateButton(Frame, "Aimbot OFF", "🎯")
+AimbotButton.Position = UDim2.new(0, 10, 0, 80)
+
+local DevLabel = Instance.new("TextLabel", Frame)
+DevLabel.Size = UDim2.new(1, -20, 0, 30)
+DevLabel.Position = UDim2.new(0, 10, 0, 120)
+DevLabel.BackgroundTransparency = 1
+DevLabel.Text = "Phát Triển Bởi DNN, Bán Làm Chó."
+DevLabel.TextSize = 16
+DevLabel.Font = Enum.Font.SourceSansBold
+
+local function GlowEffect()
+    while true do
+        for i = 0, 1, 0.1 do
+            DevLabel.TextColor3 = Color3.fromHSV(i, 1, 1)
+            wait(0.1)
+        end
+    end
+end
+spawn(GlowEffect)
+
+local ESPEnabled = false
+local function ToggleESP()
+    ESPEnabled = not ESPEnabled
+    ESPButton.Text = ESPEnabled and "👀 ESP ON" or "👀 ESP OFF"
+    ESPButton.BackgroundColor3 = ESPEnabled and Color3.fromRGB(255, 105, 180) or Color3.fromRGB(100, 100, 100)
+end
+ESPButton.MouseButton1Click:Connect(ToggleESP)
+
+local AimbotEnabled = false
+local function ToggleAimbot()
+    AimbotEnabled = not AimbotEnabled
+    AimbotButton.Text = AimbotEnabled and "🎯 Aimbot ON" or "🎯 Aimbot OFF"
+    AimbotButton.BackgroundColor3 = AimbotEnabled and Color3.fromRGB(255, 105, 180) or Color3.fromRGB(100, 100, 100)
+end
+AimbotButton.MouseButton1Click:Connect(ToggleAimbot)
+
+local AimbotEnabled = false
+local ESPEnabled = false
+local FOV = 150
+local Smoothness = 0.2
+local FOVCircle = Drawing.new("Circle")
+
+
+FOVCircle.Color = Color3.fromRGB(0, 255, 0)
+FOVCircle.Thickness = 2
+FOVCircle.NumSides = 100
+FOVCircle.Radius = FOV
+FOVCircle.Filled = false
+FOVCircle.Visible = false
+FOVCircle.Position = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
+
+local function ToggleESP()
+    ESPEnabled = not ESPEnabled
+    ESPButton.Text = ESPEnabled and "ESP ON" or "ESP OFF"
+    ESPButton.BackgroundColor3 = ESPEnabled and Color3.fromRGB(255, 0, 0) or Color3.fromRGB(100, 100, 100)
+
+    for _, player in pairs(Players:GetPlayers()) do
+        if player.Character then
+            for _, v in pairs(player.Character:GetChildren()) do
+                if v:IsA("Highlight") then v:Destroy() end
+            end
+        end
+    end
+
+    RunService.RenderStepped:Connect(function()
+        if not ESPEnabled then return end
+        for _, player in pairs(Players:GetPlayers()) do
+            if player ~= LocalPlayer and player.Team ~= LocalPlayer.Team and player.Character then
+                if not player.Character:FindFirstChildOfClass("Highlight") then
+                    local Highlight = Instance.new("Highlight", player.Character)
+                    Highlight.FillTransparency = 1
+                    Highlight.OutlineColor = Color3.fromRGB(255, 0, 0)
+                    Highlight.OutlineTransparency = 0
+                end
+            end
+        end
+    end)
+end
+ESPButton.MouseButton1Click:Connect(ToggleESP)
+
+local function GetNearestEnemy()
+    local NearestEnemy = nil
+    local NearestDist = math.huge
+    for _, player in pairs(Players:GetPlayers()) do
+        if player ~= LocalPlayer and player.Team ~= LocalPlayer.Team and player.Character and player.Character:FindFirstChild("Head") then
+            local Pos, OnScreen = Camera:WorldToViewportPoint(player.Character.Head.Position)
+            if OnScreen then
+                local Distance = (Vector2.new(Pos.X, Pos.Y) - Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)).Magnitude
+                if Distance < NearestDist and Distance < FOV then
+                    NearestDist = Distance
+                    NearestEnemy = player
+                end
+            end
+        end
+    end
+    return NearestEnemy
+end
+
+local function ToggleAimbot()
+    AimbotEnabled = not AimbotEnabled
+    AimbotButton.Text = AimbotEnabled and "Aimbot ON" or "Aimbot OFF"
+    AimbotButton.BackgroundColor3 = AimbotEnabled and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(100, 100, 100)
+    FOVCircle.Visible = AimbotEnabled
+
+    RunService.RenderStepped:Connect(function()
+        if not AimbotEnabled then return end
+        local Target = GetNearestEnemy()
+        if Target and Target.Character and Target.Character:FindFirstChild("Head") then
+            Camera.CFrame = Camera.CFrame:Lerp(CFrame.new(Camera.CFrame.Position, Target.Character.Head.Position), Smoothness)
+        end
+    end)
+end
+AimbotButton.MouseButton1Click:Connect(ToggleAimbot)
